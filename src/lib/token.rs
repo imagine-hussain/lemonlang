@@ -14,9 +14,13 @@ pub enum Token {
 
     // operators
     Plus,
+    PlusEq,
     Minus,
+    MinusEq,
     Mult,
+    MultEq,
     Div,
+    DivEq,
     Not,
     NotEq,
     Eq,
@@ -26,8 +30,10 @@ pub enum Token {
     Gt,
     GtEq,
     And,
+    AndEq,
     AndAnd,
     Or,
+    OrEq,
     OrOr,
     Stab,
     Arrow,
@@ -41,8 +47,9 @@ pub enum Token {
     RBracket,
     Semicolon,
     Comma,
+    Colon,
 
-    // identifiers
+    // Identifier
     Id(String),
 
     // literals
@@ -51,7 +58,6 @@ pub enum Token {
     BooleanLiteral(bool),
     StringLiteral(String),
 
-    // special tokens...
+    // TODO: Should have associated Error Variants?
     Error,
-    Eof,
 }

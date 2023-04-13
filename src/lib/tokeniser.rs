@@ -48,6 +48,7 @@ impl Tokenizer {
             Some(')') => Some(Token::RParen),
             Some(';') => Some(Token::Semicolon),
             Some(',') => Some(Token::Comma),
+            Some(':') => Some(Token::Colon),
             _ => None,
         }?;
         self.accept();
@@ -58,14 +59,22 @@ impl Tokenizer {
         let first = self.scanner.peek_next();
         let second = self.scanner.peek(1);
         let (token, two_tokens) = match first {
-            Some('+') => Some((Token::Plus, false)),
-            Some('*') => Some((Token::Mult, false)),
+            Some('+') => match second {
+                Some('=') => Some((Token::PlusEq, true)),
+                _ => Some((Token::Plus, false)),
+            },
+            Some('*') => match second {
+                Some('=') => Some((Token::MultEq, true)),
+                _ => Some((Token::Mult, false)),
+            },
             Some('-') => match second {
                 Some('>') => Some((Token::Stab, true)),
+                Some('=') => Some((Token::MinusEq, true)),
                 _ => Some((Token::Minus, false)),
             },
             Some('/') => match second {
                 Some('*') | Some('/') => None,
+                Some('=') => Some((Token::DivEq, true)),
                 _ => Some((Token::Div, false)),
             },
             Some('<') => match second {
@@ -83,10 +92,12 @@ impl Tokenizer {
             },
             Some('&') => match second {
                 Some('&') => Some((Token::AndAnd, true)),
+                Some('=') => Some((Token::AndEq, true)),
                 _ => Some((Token::And, false)),
             },
             Some('|') => match second {
                 Some('|') => Some((Token::OrOr, true)),
+                Some('=') => Some((Token::OrEq, true)),
                 _ => Some((Token::Or, false)),
             },
             Some('!') => match second {

@@ -37,7 +37,7 @@ fn comments() {
 }
 
 #[test]
-fn test_keywords() {
+fn keywords() {
     let res = tokenise_file("keywords_ident.txt");
     assert_eq!(
         vec![
@@ -64,6 +64,11 @@ fn test_keywords() {
     );
 }
 
-fn tests_operators() {
-    let res = tokenise_file("operators.txt");
+// fn tests_operators() {
+//     let res = tokenise_file("operators.txt");
+// }
+
+#[test]
+fn int() {
+    assert_eq!(vec![IntLiteral("100".into())], tokenise("100".into()));
 }

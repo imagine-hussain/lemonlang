@@ -196,6 +196,7 @@ impl Tokenizer {
             if !c.is_ascii_digit() {
                 break;
             }
+            self.accept();
             spelling.push(c);
         }
         spelling

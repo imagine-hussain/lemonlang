@@ -127,6 +127,7 @@ impl Tokenizer {
         let plus_minus = self.scanner.peek_next();
         if let Some(pm) = plus_minus {
             if pm == '+' || pm == '-' {
+                self.accept();
                 spelling.push(pm);
             }
         }

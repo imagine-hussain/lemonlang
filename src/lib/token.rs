@@ -21,6 +21,7 @@ pub enum Token {
     MultEq,
     Div,
     DivEq,
+    Dot,
     Not,
     NotEq,
     Eq,

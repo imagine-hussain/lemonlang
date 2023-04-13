@@ -69,10 +69,19 @@ fn keywords() {
 // }
 
 #[test]
+
 fn int() {
     assert_eq!(vec![IntLiteral("100".into())], tokenise("100".into()));
     assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100e2".into()));
     assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100E2".into()));
     assert_eq!(vec![IntLiteral("100e+2".into())], tokenise("100E+2".into()));
     assert_eq!(vec![IntLiteral("100e-2".into())], tokenise("100E-2".into()));
+    assert_eq!(vec![IntLiteral(".02".into())], tokenise(".02".into()));
+    assert_eq!(vec![IntLiteral("100.10".into())], tokenise("100.10".into()));
+    assert_eq!(
+        vec![IntLiteral("100.10e2".into())],
+        tokenise("100.10e2".into())
+    );
+    assert_eq!(vec![IntLiteral(".100e1".into())], tokenise(".100e1".into()));
+    assert_eq!(vec![Dot, Id("e1".into())], tokenise(".e1".into()));
 }

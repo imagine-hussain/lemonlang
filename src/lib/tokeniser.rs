@@ -179,14 +179,17 @@ impl Tokenizer {
         }
         let lhs = self.parse_digits();
         let decimal = match self.scanner.peek_next() {
-            Some('.') => String::from("."),
+            Some('.') => {
+                self.accept();
+                String::from(".")
+            }
             _ => String::from(""),
         };
         let rhs = self.parse_digits();
         if lhs.len() == 0 && rhs.len() == 0 {
             return match decimal.len() {
                 0 => None,
-                _ => Some(Token::Error),
+                _ => Some(Token::Dot),
             };
         }
         let exponent = self.parse_exponent();
@@ -253,7 +256,7 @@ impl Tokenizer {
     }
 
     fn accept(&mut self) -> Option<char> {
-        self.scanner.next()
+        dbg!(self.scanner.next())
     }
 }
 

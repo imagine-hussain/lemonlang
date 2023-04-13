@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "vc-rs"
+name = "lemonlang"
 version = "0.1.0"

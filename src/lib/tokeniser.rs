@@ -15,92 +15,26 @@ impl Tokenizer {
         };
     }
 
-    fn parse_numeric_literal(&mut self) -> Option<Token> {
-        let first = self.scanner.peek_next()?;
-        if !(first.is_ascii_digit() || first == '.') {
-            return None;
+    pub fn peek(&mut self, idx: usize) -> Option<Token> {
+        if idx < self.lookahead.len() {
+            return self.lookahead.get(idx).map(|t| t.clone());
         }
-        let lhs = self.parse_digits();
-        let decimal = match self.scanner.peek_next() {
-            Some('.') => String::from("."),
-            _ => String::from(""),
-        };
-        let rhs = self.parse_digits();
-        if lhs.len() == 0 && rhs.len() == 0 {
-            return match decimal.len() {
-                0 => None,
-                _ => Some(Token::Error),
-            };
-        }
-        let exponent = self.parse_exponent();
-        let spelling = lhs + &decimal + &rhs + &exponent;
-        Some(Token::IntLiteral(spelling))
+
+        let backfill: Vec<Token> = (0..idx - self.lookahead.len())
+            .filter_map(|_| self.parse_next_token())
+            .collect();
+        self.lookahead.extend(backfill.into_iter());
+
+        self.lookahead.get(idx).map(|t| t.clone())
     }
 
-    fn parse_exponent(&mut self) -> String {
-        let mut spelling = String::new();
-        let e = self.scanner.peek_next();
-        let e = match e {
-            Some('e') | Some('E') => 'e',
-            _ => return spelling,
-        };
-        spelling.push(e);
-        let plus_minus = self.scanner.peek_next();
-        if let Some(pm) = plus_minus {
-            if pm == '+' || pm == '-' {
-                spelling.push(pm);
-            }
-        }
-        spelling + &self.parse_digits()
-    }
-
-    fn parse_digits(&mut self) -> String {
-        let mut spelling = String::new();
-        while let Some(c) = self.scanner.peek_next() {
-            if !c.is_ascii_digit() {
-                break;
-            }
-            spelling.push(c);
-        }
-        spelling
-    }
-
-    fn parse_string_literal(&mut self) -> Option<Token> {
-        match self.scanner.peek_next() == Some('\"') {
-            true => self.accept(),
-            false => return None,
-        };
-        let mut spelling = String::new();
-        loop {
-            match self.scanner.next() {
-                Some('\"') => {
-                    break;
-                }
-                Some('\\') => {
-                    unimplemented!("need to parse escape chars")
-                }
-                Some(c) => {
-                    spelling.push(c);
-                }
-                None => unimplemented!(),
-            }
-        }
-        Some(Token::StringLiteral(spelling))
-    }
-
-    fn parse_idents_keywords(&mut self) -> Option<Token> {
-        if !self.scanner.peek_next()?.is_ascii_alphabetic() {
-            return None;
-        }
-        let mut spelling = String::new();
-        while let Some(c) = self.scanner.peek_next() {
-            if !c.is_ascii_alphanumeric() || c == '_' {
-                break;
-            }
-            self.accept();
-            spelling.push(c);
-        }
-        Some(ident_or_keyword_from_spelling(spelling))
+    fn parse_next_token(&mut self) -> Option<Token> {
+        self.trim_whitespace_comments();
+        self.parse_separator()
+            .or_else(|| self.parse_operator())
+            .or_else(|| self.parse_idents_keywords())
+            .or_else(|| self.parse_string_literal())
+            .or_else(|| self.parse_numeric_literal())
     }
 
     fn parse_separator(&mut self) -> Option<Token> {
@@ -168,6 +102,94 @@ impl Tokenizer {
         Some(token)
     }
 
+    fn parse_exponent(&mut self) -> String {
+        let mut spelling = String::new();
+        let e = self.scanner.peek_next();
+        let e = match e {
+            Some('e') | Some('E') => 'e',
+            _ => return spelling,
+        };
+        spelling.push(e);
+        let plus_minus = self.scanner.peek_next();
+        if let Some(pm) = plus_minus {
+            if pm == '+' || pm == '-' {
+                spelling.push(pm);
+            }
+        }
+        spelling + &self.parse_digits()
+    }
+
+    fn parse_idents_keywords(&mut self) -> Option<Token> {
+        if !self.scanner.peek_next()?.is_ascii_alphabetic() {
+            return None;
+        }
+        let mut spelling = String::new();
+        while let Some(c) = self.scanner.peek_next() {
+            if !c.is_ascii_alphanumeric() || c == '_' {
+                break;
+            }
+            self.accept();
+            spelling.push(c);
+        }
+        Some(ident_or_keyword_from_spelling(spelling))
+    }
+
+    fn parse_string_literal(&mut self) -> Option<Token> {
+        match self.scanner.peek_next() == Some('\"') {
+            true => self.accept(),
+            false => return None,
+        };
+        let mut spelling = String::new();
+        loop {
+            match self.scanner.next() {
+                Some('\"') => {
+                    break;
+                }
+                Some('\\') => {
+                    unimplemented!("need to parse escape chars")
+                }
+                Some(c) => {
+                    spelling.push(c);
+                }
+                None => unimplemented!(),
+            }
+        }
+        Some(Token::StringLiteral(spelling))
+    }
+
+    fn parse_numeric_literal(&mut self) -> Option<Token> {
+        let first = self.scanner.peek_next()?;
+        if !(first.is_ascii_digit() || first == '.') {
+            return None;
+        }
+        let lhs = self.parse_digits();
+        let decimal = match self.scanner.peek_next() {
+            Some('.') => String::from("."),
+            _ => String::from(""),
+        };
+        let rhs = self.parse_digits();
+        if lhs.len() == 0 && rhs.len() == 0 {
+            return match decimal.len() {
+                0 => None,
+                _ => Some(Token::Error),
+            };
+        }
+        let exponent = self.parse_exponent();
+        let spelling = lhs + &decimal + &rhs + &exponent;
+        Some(Token::IntLiteral(spelling))
+    }
+
+    fn parse_digits(&mut self) -> String {
+        let mut spelling = String::new();
+        while let Some(c) = self.scanner.peek_next() {
+            if !c.is_ascii_digit() {
+                break;
+            }
+            spelling.push(c);
+        }
+        spelling
+    }
+
     fn trim_whitespace_comments(&mut self) {
         loop {
             if self.at_whitespace() {
@@ -178,9 +200,6 @@ impl Tokenizer {
                 break;
             }
         }
-    }
-    fn accept(&mut self) -> Option<char> {
-        self.scanner.next()
     }
 
     fn at_whitespace(&self) -> bool {
@@ -216,6 +235,10 @@ impl Tokenizer {
             }
         }
     }
+
+    fn accept(&mut self) -> Option<char> {
+        self.scanner.next()
+    }
 }
 
 fn ident_or_keyword_from_spelling(spelling: String) -> Token {
@@ -241,13 +264,8 @@ impl Iterator for Tokenizer {
     type Item = Token;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.trim_whitespace_comments();
         self.lookahead
             .pop_front()
-            .or_else(|| self.parse_separator())
-            .or_else(|| self.parse_operator())
-            .or_else(|| self.parse_idents_keywords())
-            .or_else(|| self.parse_string_literal())
-            .or_else(|| self.parse_numeric_literal())
+            .or_else(|| self.parse_next_token())
     }
 }

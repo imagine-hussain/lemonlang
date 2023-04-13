@@ -117,7 +117,10 @@ impl Tokenizer {
         let mut spelling = String::new();
         let e = self.scanner.peek_next();
         let e = match e {
-            Some('e') | Some('E') => 'e',
+            Some('e') | Some('E') => {
+                self.accept();
+                'e'
+            }
             _ => return spelling,
         };
         spelling.push(e);

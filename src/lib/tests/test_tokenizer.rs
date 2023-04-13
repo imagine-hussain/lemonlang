@@ -71,4 +71,6 @@ fn keywords() {
 #[test]
 fn int() {
     assert_eq!(vec![IntLiteral("100".into())], tokenise("100".into()));
+    assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100e2".into()));
+    assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100E2".into()));
 }

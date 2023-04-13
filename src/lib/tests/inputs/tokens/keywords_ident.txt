@@ -1,0 +1,21 @@
+bool
+break
+continue
+else
+break
+continue
+else
+float
+for
+if
+int
+return
+float
+// idents
+
+floater
+breaker
+cont
+id
+ifs
+

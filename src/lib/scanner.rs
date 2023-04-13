@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, iter::Peekable, path::Path};
+use std::{collections::VecDeque, path::Path};
 
 pub struct Scanner {
     source: VecDeque<char>,

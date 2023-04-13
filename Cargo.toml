@@ -3,9 +3,11 @@ name = "lemonlang"
 version = "0.1.0"
 edition = "2021"
 
+
 [lib]
 name = "lib"
 path = "./src/lib/lib.rs"
 
 [dependencies]
+clap = { version = "4.2.1", features = ["derive"] }
 

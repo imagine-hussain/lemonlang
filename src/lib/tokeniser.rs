@@ -1,6 +1,6 @@
 use std::{char, collections::VecDeque};
 
-use log::{error, trace};
+use log::{debug, error, trace};
 
 use crate::{Scanner, Token};
 
@@ -22,9 +22,10 @@ impl Tokenizer {
             return self.lookahead.get(idx).map(|t| t.clone());
         }
 
-        let backfill: Vec<Token> = (0..idx - self.lookahead.len())
+        let backfill: Vec<Token> = (0..(idx + 1 - self.lookahead.len()))
             .filter_map(|_| self.parse_next_token())
             .collect();
+
         self.lookahead.extend(backfill.into_iter());
 
         self.lookahead.get(idx).map(|t| t.clone())
@@ -312,6 +313,7 @@ fn ident_or_keyword_from_spelling(spelling: String) -> Token {
         "char" => Token::Char,
         "continue" => Token::Continue,
         "struct" => Token::Struct,
+        "enum" => Token::Enum,
         "else" => Token::Else,
         "float" => Token::Float,
         "for" => Token::For,
@@ -320,6 +322,8 @@ fn ident_or_keyword_from_spelling(spelling: String) -> Token {
         "return" => Token::Return,
         "void" => Token::Void,
         "while" => Token::While,
+        "loop" => Token::Loop,
+        "match" => Token::Match,
         "true" => Token::BooleanLiteral(true),
         "false" => Token::BooleanLiteral(false),
         _ => Token::Id(spelling),
@@ -337,8 +341,7 @@ impl Iterator for Tokenizer {
 }
 
 fn escape_char(c: Option<char>) -> Option<char> {
-    let c = c?;
-    match c {
+    match c? {
         '\"' => Some('\"'),
         'n' => Some('\n'),
         't' => Some('\t'),

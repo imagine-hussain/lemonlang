@@ -4,6 +4,8 @@ use std::path::Path;
 
 use crate::{Scanner, Token, Tokenizer};
 
+use test_log::test;
+
 use Token::*;
 
 const BASE_PATH: &'static str = "src/lib/tests/inputs/tokens/";
@@ -100,4 +102,20 @@ fn string() {
     //     vec![StringLiteral("\n \t \\ \'".into())],
     //     tokenise("\\n \\t \\ \\'")
     // );
+}
+
+#[test]
+fn lookahead() {
+    let scanner = Scanner::from_string("a b c d e".into());
+    let mut tt = Tokenizer::new(scanner);
+
+    assert_eq!(Some(Id("a".into())), tt.peek(0));
+    assert_eq!(Some(Id("a".into())), tt.peek(0));
+
+    assert_eq!(Some(Id("b".into())), tt.peek(1));
+    assert_eq!(Some(Id("b".into())), tt.peek(1));
+
+    assert_eq!(Some(Id("a".into())), tt.peek(0));
+
+    assert_eq!(Some(Id("a".into())), tt.next());
 }

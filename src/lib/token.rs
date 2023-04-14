@@ -11,8 +11,11 @@ pub enum Token {
     Int,
     Return,
     Struct,
+    Enum,
     Void,
     While,
+    Loop,
+    Match,
 
     // operators
     Plus,

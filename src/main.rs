@@ -12,11 +12,13 @@ struct Args {
 }
 
 fn main() {
+    startup_logger();
     let args = Args::parse();
     let file = args.file;
     let scanner = Scanner::from_path(Path::new(&file)).expect("where file");
     let tokenizer = Tokenizer::new(scanner);
     tokenizer.for_each(|t| println!("{:?}", t));
+    info!("Finished Compiling Succesfully");
 }
 
 fn startup_logger() {

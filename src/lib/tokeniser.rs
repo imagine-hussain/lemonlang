@@ -1,5 +1,7 @@
 use std::{char, collections::VecDeque};
 
+use log::{error, trace};
+
 use crate::{Scanner, Token};
 
 pub struct Tokenizer {
@@ -34,6 +36,7 @@ impl Tokenizer {
             .or_else(|| self.parse_operator())
             .or_else(|| self.parse_idents_keywords())
             .or_else(|| self.parse_string_literal())
+            .or_else(|| self.parse_char_literal())
             .or_else(|| self.parse_numeric_literal())
     }
 
@@ -150,26 +153,66 @@ impl Tokenizer {
     }
 
     fn parse_string_literal(&mut self) -> Option<Token> {
+        dbg!("in string");
         match self.scanner.peek_next() == Some('\"') {
             true => self.accept(),
             false => return None,
         };
         let mut spelling = String::new();
         loop {
-            match self.scanner.next() {
+            let next = self.accept();
+            match next {
                 Some('\"') => {
                     break;
                 }
-                Some('\\') => {
-                    unimplemented!("need to parse escape chars")
-                }
+                Some('\\') => match escape_char(self.accept()) {
+                    Some(c) => {
+                        spelling.push(c);
+                    }
+                    None => {
+                        unimplemented!("error: bad escape")
+                    }
+                },
                 Some(c) => {
                     spelling.push(c);
                 }
-                None => unimplemented!(),
+                None => {
+                    error!("unterminated string with spelling: {:?}", spelling);
+                    unimplemented!("Unterminated string")
+                }
             }
         }
         Some(Token::StringLiteral(spelling))
+    }
+
+    fn parse_char_literal(&mut self) -> Option<Token> {
+        let first = self.scanner.peek_next();
+        if first != Some('\'') {
+            return None;
+        }
+        self.accept();
+        match self.accept() {
+            Some('\\') => {
+                let c = match escape_char(self.accept()) {
+                    Some(c) => c,
+                    None => unimplemented!("invalid escape"),
+                };
+                if self.accept() != Some('\'') {
+                    unimplemented!("err: char must be one character")
+                };
+                return Some(Token::CharLiteral(c));
+            }
+            Some('\'') => {
+                unimplemented!("empty char");
+            }
+            Some(c) => {
+                if self.accept() != Some('\'') {
+                    unimplemented!("err: char must be one character")
+                }
+                return Some(Token::CharLiteral(c));
+            }
+            None => unimplemented!("unterminated char"),
+        };
     }
 
     fn parse_numeric_literal(&mut self) -> Option<Token> {
@@ -256,7 +299,9 @@ impl Tokenizer {
     }
 
     fn accept(&mut self) -> Option<char> {
-        dbg!(self.scanner.next())
+        let next = self.scanner.next();
+        trace!("Accepting: {:?}", next);
+        next
     }
 }
 
@@ -264,7 +309,9 @@ fn ident_or_keyword_from_spelling(spelling: String) -> Token {
     match spelling.as_str() {
         "bool" => Token::Bool,
         "break" => Token::Break,
+        "char" => Token::Char,
         "continue" => Token::Continue,
+        "struct" => Token::Struct,
         "else" => Token::Else,
         "float" => Token::Float,
         "for" => Token::For,
@@ -286,5 +333,17 @@ impl Iterator for Tokenizer {
         self.lookahead
             .pop_front()
             .or_else(|| self.parse_next_token())
+    }
+}
+
+fn escape_char(c: Option<char>) -> Option<char> {
+    let c = c?;
+    match c {
+        '\"' => Some('\"'),
+        'n' => Some('\n'),
+        't' => Some('\t'),
+        '\\' => Some('\\'),
+        '\'' => Some('\''),
+        _ => None,
     }
 }

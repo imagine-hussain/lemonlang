@@ -8,8 +8,8 @@ use Token::*;
 
 const BASE_PATH: &'static str = "src/lib/tests/inputs/tokens/";
 
-fn tokenise(source: String) -> Vec<Token> {
-    let scanner = Scanner::from_string(source);
+fn tokenise<S: Into<String>>(source: S) -> Vec<Token> {
+    let scanner = Scanner::from_string(source.into());
     Tokenizer::new(scanner).collect()
 }
 
@@ -71,17 +71,33 @@ fn keywords() {
 #[test]
 
 fn int() {
-    assert_eq!(vec![IntLiteral("100".into())], tokenise("100".into()));
-    assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100e2".into()));
-    assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100E2".into()));
-    assert_eq!(vec![IntLiteral("100e+2".into())], tokenise("100E+2".into()));
-    assert_eq!(vec![IntLiteral("100e-2".into())], tokenise("100E-2".into()));
-    assert_eq!(vec![IntLiteral(".02".into())], tokenise(".02".into()));
-    assert_eq!(vec![IntLiteral("100.10".into())], tokenise("100.10".into()));
+    assert_eq!(vec![IntLiteral("100".into())], tokenise("100"));
+    assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100e2"));
+    assert_eq!(vec![IntLiteral("100e2".into())], tokenise("100E2"));
+    assert_eq!(vec![IntLiteral("100e+2".into())], tokenise("100E+2"));
+    assert_eq!(vec![IntLiteral("100e-2".into())], tokenise("100E-2"));
+    assert_eq!(vec![IntLiteral(".02".into())], tokenise(".02"));
+    assert_eq!(vec![IntLiteral("100.10".into())], tokenise("100.10"));
+    assert_eq!(vec![IntLiteral("100.10e2".into())], tokenise("100.10e2"));
+    assert_eq!(vec![IntLiteral(".100e1".into())], tokenise(".100e1"));
+    assert_eq!(vec![Dot, Id("e1".into())], tokenise(".e1"));
+}
+
+#[test]
+fn char() {
+    assert_eq!(vec![CharLiteral('c')], tokenise("'c'"));
+    assert_eq!(vec![CharLiteral('\n')], tokenise("'\\n'"));
+}
+
+#[test]
+fn string() {
     assert_eq!(
-        vec![IntLiteral("100.10e2".into())],
-        tokenise("100.10e2".into())
+        vec![StringLiteral("test.hi".into())],
+        tokenise("\"test.hi\"")
     );
-    assert_eq!(vec![IntLiteral(".100e1".into())], tokenise(".100e1".into()));
-    assert_eq!(vec![Dot, Id("e1".into())], tokenise(".e1".into()));
+
+    // assert_eq!(
+    //     vec![StringLiteral("\n \t \\ \'".into())],
+    //     tokenise("\\n \\t \\ \\'")
+    // );
 }

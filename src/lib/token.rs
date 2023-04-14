@@ -3,12 +3,14 @@ pub enum Token {
     Bool,
     Break,
     Continue,
+    Char,
     Else,
     Float,
     For,
     If,
     Int,
     Return,
+    Struct,
     Void,
     While,
 
@@ -58,6 +60,7 @@ pub enum Token {
     FloatLiteral(String),
     BooleanLiteral(bool),
     StringLiteral(String),
+    CharLiteral(char),
 
     // TODO: Should have associated Error Variants?
     Error,

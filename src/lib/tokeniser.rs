@@ -1,6 +1,6 @@
 use std::{char, collections::VecDeque};
 
-use log::{debug, error, trace};
+use log::{error, trace};
 
 use crate::{Scanner, Token};
 

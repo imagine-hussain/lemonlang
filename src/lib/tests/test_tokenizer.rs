@@ -118,4 +118,17 @@ fn lookahead() {
     assert_eq!(Some(Id("a".into())), tt.peek(0));
 
     assert_eq!(Some(Id("a".into())), tt.next());
+
+    assert_eq!(Some(Id("e".into())), tt.peek(3));
+    assert_eq!(Some(Id("b".into())), tt.peek(0));
+
+    assert_eq!(
+        vec![
+            Id("b".into()),
+            Id("c".into()),
+            Id("d".into()),
+            Id("e".into()),
+        ],
+        tt.collect::<Vec<Token>>()
+    )
 }

@@ -119,8 +119,7 @@ impl Tokenizer {
 
     fn parse_exponent(&mut self) -> String {
         let mut spelling = String::new();
-        let e = self.scanner.peek_next();
-        let e = match e {
+        let e = match self.scanner.peek_next() {
             Some('e') | Some('E') => {
                 self.accept();
                 'e'
@@ -154,7 +153,6 @@ impl Tokenizer {
     }
 
     fn parse_string_literal(&mut self) -> Option<Token> {
-        dbg!("in string");
         match self.scanner.peek_next() == Some('\"') {
             true => self.accept(),
             false => return None,

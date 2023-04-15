@@ -21,10 +21,13 @@ fn main() {
     info!("Finished Compiling Succesfully");
 }
 
+const DEBUG_LOG: &'static str = "debug";
+const RELEASE_LOG: &'static str = "info";
+
 fn startup_logger() {
     let (default_filter, default_write) = match in_release_build() {
-        true => ("info", "always"),
-        false => ("debug", "always"),
+        true => (RELEASE_LOG, "always"),
+        false => (DEBUG_LOG, "always"),
     };
 
     let env = Env::default()

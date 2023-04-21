@@ -2,7 +2,7 @@
 
 use std::path::Path;
 
-use crate::{Scanner, Token, Tokenizer};
+use crate::{Lexer, Scanner, Token};
 
 use test_log::test;
 
@@ -12,14 +12,14 @@ const BASE_PATH: &'static str = "src/lib/tests/inputs/tokens/";
 
 fn tokenise<S: Into<String>>(source: S) -> Vec<Token> {
     let scanner = Scanner::from_string(source.into());
-    Tokenizer::new(scanner).collect()
+    Lexer::new(scanner).collect()
 }
 
 fn tokenise_file(path: &str) -> Vec<Token> {
     let path = Path::new(BASE_PATH).join(Path::new(path));
     let path = dbg!(path);
     let scanner = Scanner::from_path(&path).expect("Test file should exist");
-    Tokenizer::new(scanner).collect()
+    Lexer::new(scanner).collect()
 }
 
 #[test]
@@ -107,7 +107,7 @@ fn string() {
 #[test]
 fn lookahead() {
     let scanner = Scanner::from_string("a b c d e".into());
-    let mut tt = Tokenizer::new(scanner);
+    let mut tt = Lexer::new(scanner);
 
     assert_eq!(Some(Id("a".into())), tt.peek(0));
     assert_eq!(Some(Id("a".into())), tt.peek(0));

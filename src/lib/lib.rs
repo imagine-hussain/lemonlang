@@ -1,8 +1,8 @@
+mod lexer;
 mod scanner;
 mod tests;
 mod token;
-mod tokeniser;
 
+pub use lexer::Lexer;
 pub use scanner::Scanner;
 pub use token::Token;
-pub use tokeniser::Tokenizer;

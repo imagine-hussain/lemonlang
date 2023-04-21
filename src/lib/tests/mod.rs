@@ -1,1 +1,1 @@
-mod test_tokenizer;
+mod test_lexer;

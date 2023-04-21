@@ -2,7 +2,7 @@ use std::path::Path;
 
 use clap::Parser;
 use env_logger::Env;
-use lib::{Scanner, Tokenizer};
+use lib::{Lexer, Scanner};
 use log::{debug, error, info, trace, warn};
 
 #[derive(Parser, Debug, Clone)]
@@ -16,8 +16,8 @@ fn main() {
     let args = Args::parse();
     let file = args.file;
     let scanner = Scanner::from_path(Path::new(&file)).expect("where file");
-    let tokenizer = Tokenizer::new(scanner);
-    tokenizer.for_each(|t| println!("{:?}", t));
+    let lexer = Lexer::new(scanner);
+    lexer.for_each(|t| println!("{:?}", t));
     info!("Finished Compiling Succesfully");
 }
 

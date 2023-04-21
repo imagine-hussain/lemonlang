@@ -4,12 +4,12 @@ use log::{error, trace};
 
 use crate::{Scanner, Token};
 
-pub struct Tokenizer {
+pub struct Lexer {
     scanner: Scanner,
     lookahead: VecDeque<Token>,
 }
 
-impl Tokenizer {
+impl Lexer {
     pub fn new(scanner: Scanner) -> Self {
         return Self {
             scanner,
@@ -328,7 +328,7 @@ fn ident_or_keyword_from_spelling(spelling: String) -> Token {
     }
 }
 
-impl Iterator for Tokenizer {
+impl Iterator for Lexer {
     type Item = Token;
 
     fn next(&mut self) -> Option<Self::Item> {

@@ -3,7 +3,11 @@ use std::path::Path;
 use clap::Parser;
 use env_logger::Env;
 use lib::{Lexer, Scanner};
-use log::{debug, error, info, trace, warn};
+use log::debug;
+use log::error;
+use log::info;
+use log::trace;
+use log::warn;
 
 #[derive(Parser, Debug, Clone)]
 struct Args {

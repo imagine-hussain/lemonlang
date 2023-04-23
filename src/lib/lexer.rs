@@ -19,7 +19,7 @@ impl Lexer {
 
     pub fn peek(&mut self, idx: usize) -> Option<Token> {
         if idx < self.lookahead.len() {
-            return self.lookahead.get(idx).map(|t| t.clone());
+            return self.lookahead.get(idx).cloned();
         }
 
         let backfill: Vec<Token> = (0..(idx + 1 - self.lookahead.len()))
@@ -28,7 +28,7 @@ impl Lexer {
 
         self.lookahead.extend(backfill.into_iter());
 
-        self.lookahead.get(idx).map(|t| t.clone())
+        self.lookahead.get(idx).cloned()
     }
 
     fn parse_next_token(&mut self) -> Option<Token> {
@@ -317,6 +317,8 @@ fn ident_or_keyword_from_spelling(spelling: String) -> Token {
         "for" => Token::For,
         "if" => Token::If,
         "int" => Token::Int,
+        "let" => Token::Let,
+        "const" => Token::Const,
         "return" => Token::Return,
         "void" => Token::Void,
         "while" => Token::While,

@@ -1,5 +1,6 @@
 #[derive(Debug, Hash, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Token {
+    // Keywords
     Bool,
     Break,
     Continue,
@@ -15,6 +16,8 @@ pub enum Token {
     Void,
     While,
     Loop,
+    Let,
+    Const,
     Match,
 
     // operators

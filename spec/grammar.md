@@ -49,10 +49,20 @@ by the language.
 
 ```
 <keyword> = "use"
-            | "for"
-            | "break"
-    ... currently incomplete: TODO
+            | "let"
+TODO:
 ```
+
+## Variable Declarations
+
+Variables can be declared with the `let` keyword.
+Not that any `<ident>` on the LHS must be an unqualified identifier.
+
+```
+<decl-expr>  = "let" <ident> "=" <expr> 
+TODO
+```
+
 
 ## Functions and Closures
 

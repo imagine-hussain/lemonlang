@@ -54,4 +54,37 @@ by the language.
     ... currently incomplete: TODO
 ```
 
+## Functions and Closures
 
+The syntax for a closure is:
+
+```
+<closure>           = (<type> "from")?  <para-list> "->" <expr>
+<paralist>          = "(" <proper-para-list>? ")"
+<proper-para-list>  = <para-decl> ( "," <para-decl> )*
+<para-decl>         = <ident> ":" <type>
+```
+
+Functions are treated as bindings to closures.
+However, while closures may normally omit their type, when being passed
+as arguments, when functions must have an explicit type.
+
+```
+<function-decl>     = "let" <ident> "=" <closure> ";"
+```
+Note that `<function-decl>` is not an intrinsic part of the
+grammar and exists only for demonstrative purposes.
+In practice, a `<function-decl>` is not treaty any differently
+to a normal `<decl>.`
+
+### Example
+
+```rust
+// Closure binding: Explicit Type Required
+let double = i32 from (x: i32) -> x * 2
+
+// As argument - Type ommitted
+foo_iter()
+    .map((x: i32) -> x * 2) // Type omitted
+    .map(i32 from (x: i32) -> x * 2) // Explicit Type
+```

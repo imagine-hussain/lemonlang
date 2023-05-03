@@ -48,7 +48,7 @@ by the language.
 ## Reserved Keywords
 
 ```
-<keyword> = "use"
+<keyword>   = "use"
             | "let"
 TODO:
 ```

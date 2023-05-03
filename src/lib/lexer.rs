@@ -52,7 +52,6 @@ impl Lexer {
             Some(')') => Some(Token::RParen),
             Some(';') => Some(Token::Semicolon),
             Some(',') => Some(Token::Comma),
-            Some(':') => Some(Token::Colon),
             _ => None,
         }?;
         self.accept();
@@ -107,6 +106,10 @@ impl Lexer {
             Some('!') => match second {
                 Some('=') => Some((Token::NotEq, true)),
                 _ => Some((Token::Not, false)),
+            },
+            Some(':') => match second {
+                Some('=') => Some((Token::ColonCOlon, true))
+                _ => Some((Token::Colon, false)),
             },
             _ => None,
         }?;

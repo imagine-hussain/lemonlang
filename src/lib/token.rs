@@ -57,6 +57,7 @@ pub enum Token {
     Semicolon,
     Comma,
     Colon,
+    ColonColon,
 
     // Identifier
     Id(String),

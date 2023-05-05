@@ -97,7 +97,7 @@ to a normal `<decl>.`
 
 ```rust
 // Closure binding: Explicit Type Required
-let double = i32 from (x: i32) -> x * 2
+let double = i32 from (x: i32) -> x * 2;
 // Closure with compound statement
 let double = i32 from (x: i32) -> {
     foo(x);

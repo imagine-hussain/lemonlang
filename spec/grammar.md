@@ -18,7 +18,7 @@ These modules are linked together at compile time.
 
 Modules may be nested.
 
-```
+```html
 <module> := ( <use-decl> | <func-decl> | <global-decl> | <mod-decl> )*
 
 <use-decl> = "use" <use-paths> ";";
@@ -27,6 +27,7 @@ Modules may be nested.
 <use-path> = <ident> | "{" <use-path> ("," <use-path>)* "}";
 
 ```
+
 
 ## Identifiers
 
@@ -39,7 +40,7 @@ Identifiers may also qualify what module they come from by using `::`.
 Unqualified identifiers may not conflict with `<keyword>`s reserved
 by the language.
 
-```
+```html
 
 <ident>             := <unqualified-ident> ("::" <unqualified-ident> )*
 
@@ -47,7 +48,7 @@ by the language.
 
 ## Reserved Keywords
 
-```
+```html
 <keyword>   = "use"
             | "let"
 TODO:
@@ -58,7 +59,7 @@ TODO:
 Variables can be declared with the `let` keyword.
 Not that any `<ident>` on the LHS must be an unqualified identifier.
 
-```
+```html
 <decl-expr>  = "let" <ident> "=" <expr> 
 TODO
 ```
@@ -68,7 +69,7 @@ TODO
 
 The syntax for a closure is:
 
-```
+```html
 <closure>           = (<type> "from")?  <para-list> "->" <expr>
 <paralist>          = "(" <proper-para-list>? ")"
 <proper-para-list>  = <para-decl> ( "," <para-decl> )*
@@ -85,7 +86,7 @@ For a `<simple-expr>` closure that expects a unit return, the
 `~` operator can be used to discard the return value of the expression.
 
 
-```
+```html
 <function-decl>     = "let" <ident> "=" <closure> ";"
 ```
 Note that `<function-decl>` is not an intrinsic part of the
@@ -113,3 +114,54 @@ foo_iter()
     .map((x: i32) -> x * 2) // Type omitted
     .map(i32 from (x: i32) -> x * 2) // Explicit Type
 ```
+
+# Expressions and Statements
+
+Expressions evaluate to a value. As Lemon-Lang is expression oriented,
+most things evaluate to an expression.
+Statements are a certain subset of expressions that semantically,
+do not need a value. However, for consistency, they may be treated
+as expressions of `unit` type.
+
+A compound expression may contain an arbitrary amount of statements followed by
+an optional expression. The value of the compound expression is equal to the value
+of the value of the final expression. If the final expression is missing then,
+the compound expression evaluates to `unit` type.
+
+
+## Top Level Structure
+
+```html
+<expr> =  <compound-expr> | <statement> | <simple-expr>
+<compound-expr> = "{" <statement>* <expr>? "}"
+```
+
+## Expression Grammar
+
+## Statement Grammar
+
+Assignments are statements. Assignment chaining is undefined behaviour.
+
+- `return` will return a value out of the nearest closure.
+- `continue` will continue the nearest loop.
+- `break` will break out of the nearest compound-expression, closure or loop, unless a scope label is specified.
+It is effectively a `return` statement but for expressions.
+
+```html
+<statement> = <actual-statement> ";"
+
+<actual-statement>  = <assign-statement>
+                    | <decl-stmtl>
+                    | <return-stmt>
+                    | <break-stmt>
+                    | <continue-stmt>
+
+<assign-statement>  = <ident> "=" <expr>
+<decl-stmt>         = "let" <assign-statement>
+<return-stmt>       = "return" <expr>
+<break-stmt>        = "break" <label>? <expr>
+<continue-stmt>     = "continue"
+```
+
+
+

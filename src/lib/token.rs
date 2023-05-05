@@ -44,7 +44,9 @@ pub enum Token {
     Or,
     OrEq,
     OrOr,
+    /// `->`
     Stab,
+    /// `=>`
     Arrow,
     Tilde,
 

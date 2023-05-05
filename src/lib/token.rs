@@ -46,6 +46,7 @@ pub enum Token {
     OrOr,
     Stab,
     Arrow,
+    Tilde,
 
     // separators
     LCurly,

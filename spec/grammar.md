@@ -77,7 +77,13 @@ The syntax for a closure is:
 
 Functions are treated as bindings to closures.
 However, while closures may normally omit their type, when being passed
-as arguments, when functions must have an explicit type.
+as arguments, when functions must have an explicit type. If there is
+no type given for functions then, a return type of `()` is assumed.
+
+For a `<simple-expr>` closure that expects a unit return, the
+<!-- TODO: add link to explanation -->
+`~` operator can be used to discard the return value of the expression.
+
 
 ```
 <function-decl>     = "let" <ident> "=" <closure> ";"
@@ -92,6 +98,15 @@ to a normal `<decl>.`
 ```rust
 // Closure binding: Explicit Type Required
 let double = i32 from (x: i32) -> x * 2
+// Closure with compound statement
+let double = i32 from (x: i32) -> {
+    foo(x);
+    x * 2
+};
+// Closure with discarded return using tilde
+let remove_top = (v: Vec<i32>) -> ~v.pop();
+// Closure with discarded return using compound statement
+let remove_top = (v: Vec<i32>) -> { v.pop(); };
 
 // As argument - Type ommitted
 foo_iter()

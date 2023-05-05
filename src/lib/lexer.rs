@@ -108,9 +108,10 @@ impl Lexer {
                 _ => Some((Token::Not, false)),
             },
             Some(':') => match second {
-                Some('=') => Some((Token::ColonCOlon, true))
+                Some('=') => Some((Token::ColonColon, true)),
                 _ => Some((Token::Colon, false)),
             },
+            Some('~') => Some((Token::Tilde, false)),
             _ => None,
         }?;
         self.accept();

@@ -80,8 +80,8 @@ However, while closures may normally omit their type, when being passed
 as arguments, when functions must have an explicit type. If there is
 no type given for functions then, a return type of `()` is assumed.
 
+<!-- TODO: add link to tilde -->
 For a `<simple-expr>` closure that expects a unit return, the
-<!-- TODO: add link to explanation -->
 `~` operator can be used to discard the return value of the expression.
 
 
